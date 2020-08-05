@@ -4,6 +4,9 @@ from furl import furl
 from bs4 import BeautifulSoup
 import json
 import re
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 secrets = []
 with open('secrets.json', 'r') as secrets_file:
@@ -76,19 +79,25 @@ last_auth_params = {
 response_last_auth_post = session.post(url=last_auth_url, data=last_auth_params)
 
 print("Status code:   %i" % response_last_auth_post.status_code)
+print("Authentication Complete :) In theory successfully too :)")
 
 response_daily_survey = session.get(DAILY_SURVEY_URL)
 
 soup = BeautifulSoup(response_daily_survey.content, features='lxml')
 
 survey_post_url = 'https://myaccess.southern.edu/mvc/daily/HealthSurvey/Daily'
-
-response_daily_survey_post = session.post(url=survey_post_url)
 daily_survey_params = {}
 
-soup.find_all('input')
+survey_inputs = soup.find('form').find_all('input')
+for survey_input in survey_inputs:
+    daily_survey_params[survey_input.get('name')] = survey_input.get('value')
 
-# print("Status code:   %i" % response.status_code)
-# print("Response body: %s" % response.content)
+for key in daily_survey_params.keys():
+    if re.search(r'\.Answer', key):
+        daily_survey_params[key] = 'No'
 
-# Sample Post -> PersonID=0480667&Answers.Index=1&Answers%5B1%5D.QuestionID=1&Answers%5B1%5D.Answer=No&Answers.Index=2&Answers%5B2%5D.QuestionID=2&Answers%5B2%5D.Answer=No&Answers.Index=4&Answers%5B4%5D.QuestionID=4&Answers%5B4%5D.Answer=No&Answers.Index=5&Answers%5B5%5D.QuestionID=5&Answers%5B5%5D.Answer=No
+print("Survey Params to Submit")
+pp.pprint(daily_survey_params)
+response_daily_survey_post = session.post(url=survey_post_url, data=daily_survey_params)
+print("Status code:   %i" % response_daily_survey_post.status_code)
+print(f"Now on page {response_daily_survey_post.url}")
