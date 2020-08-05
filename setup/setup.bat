@@ -1,4 +1,4 @@
-pip3 install requests furl bs4 lxml
+pip3 install -r ../requirements.txt
 set /p username="Please enter your SAU username: "
 set /p passphrase="Please enter your SAU passphrase: "
 @echo off

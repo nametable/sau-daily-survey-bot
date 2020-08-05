@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-pip3 install requests furl bs4 lxml
+pip3 install -r $DIR/../requirements.txt
 echo Please enter your SAU username: 
 read username
 echo Please enter your SAU passphrase: 
