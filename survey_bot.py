@@ -93,7 +93,8 @@ for survey_input in survey_inputs:
 
 for key in daily_survey_params.keys():
     if re.search(r'\.Answer', key):
-        daily_survey_params[key] = 'No'
+        if not ((daily_survey_params[key] == "No") or (daily_survey_params[key] == "I Agree")):
+            daily_survey_params[key] = 'No'
 
 print("Survey Params to Submit")
 pp.pprint(daily_survey_params)
